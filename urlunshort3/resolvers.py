@@ -13,10 +13,13 @@ def handle_tricks(url, tricks):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
         }
-        r = requests.get(url, headers=headers, allow_redirects=True)
-        if r.status_code in range(400, 600):
-            logging.error('"{}" returned a {} response'.format(url, r.status_code))
-            return None
+        r = requests.head(url, headers=headers)
+        print(r.status_code)
+        print('handlong tricks ^^')
+        if r.status_code in [301, 303]:
+            logging.info('"{}" returned a {} response'.format(url, r.status_code))@
+            print(r.headers['Location'])
+            return r.headers['Location']
         else:
             logging.debug(
                 'URL "{}" returned a {} status code'.format(url, r.status_code)
@@ -55,33 +58,35 @@ def generic_resolver(url, tricks, timeout=None):
         r = requests.head(url, timeout=timeout)
     else:
         r = requests.head(url)
-    redirect_codes = [300, 301, 302, 307, 308]
+    redirect_codes = range(300, 400)
+
+    print(r.headers)
     if r.status_code in redirect_codes:
         logging.info(
             '"{}" returned a {} status code for value {}'.format(
                 url, r.status_code, r.url
             )
         )
-        if r.status_code == 404:
-            if urlsplit(r.url).netloc == urlsplit(url).netloc:
-                r = requests.get(url, allow_redirects=True)
-                logging.debug(
-                    '"{}" returned a {} status code, retrying if tricks enabled'.format(
-                        url, r.status_code
-                    )
-                )
-                response = handle_tricks(url, tricks)
-                return response
-            else:
-                return r.url
+        print(url)
+        print(r.status_code)
+        print(r.url)
+        if urlsplit(r.url).netloc == urlsplit(url).netloc:
+            print('herenow')
+            # r = requests.get(url, allow_redirects=True)
+            # logging.debug(
+            #     '"{}" returned a {} status code, retrying if tricks enabled'.format(
+            #         url, r.status_code
+            #     )
+            # )
+            response = handle_tricks(url, tricks)
+            return response
         else:
-            return r.headers["Location"]  # None by default
+            return r.url
     elif r.status_code in request_error:
-        response = handle_tricks(url, tricks)
-        logging.info('"{}" returned a {} response'.format(url, r.status_code))
-        return response
-    else:
         logging.info('URL "{}" returned an unhandled response'.format(url))
-        raise Exception
+        return None
+    else:
+        return r.headers["Location"]  # None by default
+
 
     return None
