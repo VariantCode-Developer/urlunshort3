@@ -11,7 +11,7 @@ List of domains of known URL shortening services.
 
 class UrlUnshortener:
     def __init__(self, tricks=False):
-        self.services = ["bit.ly", "is.gd", "soo.gd", "t.co", "tinyurl.com", "tiny.cc"]
+        self.services = ["bit.ly", "is.gd", "t.co", "tinyurl.com", "tiny.cc"]
         if tricks == False:
             self.tricks = False
         else:

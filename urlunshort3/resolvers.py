@@ -9,16 +9,14 @@ from functools import wraps
 
 
 def handle_tricks(url, tricks):
+    # Some URL shorteners don't respond correctly to a head request, this may help
     if tricks == True:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
         }
-        r = requests.head(url, headers=headers)
-        print(r.status_code)
-        print('handlong tricks ^^')
+        r = requests.get(url, headers=headers)
         if r.status_code in [301, 303]:
-            logging.info('"{}" returned a {} response'.format(url, r.status_code))@
-            print(r.headers['Location'])
+            logging.info('"{}" returned a {} response'.format(url, r.status_code))
             return r.headers['Location']
         else:
             logging.debug(
@@ -60,24 +58,13 @@ def generic_resolver(url, tricks, timeout=None):
         r = requests.head(url)
     redirect_codes = range(300, 400)
 
-    print(r.headers)
-    if r.status_code in redirect_codes:
+    if r.status_code in request_error:
         logging.info(
             '"{}" returned a {} status code for value {}'.format(
                 url, r.status_code, r.url
             )
         )
-        print(url)
-        print(r.status_code)
-        print(r.url)
         if urlsplit(r.url).netloc == urlsplit(url).netloc:
-            print('herenow')
-            # r = requests.get(url, allow_redirects=True)
-            # logging.debug(
-            #     '"{}" returned a {} status code, retrying if tricks enabled'.format(
-            #         url, r.status_code
-            #     )
-            # )
             response = handle_tricks(url, tricks)
             return response
         else:
