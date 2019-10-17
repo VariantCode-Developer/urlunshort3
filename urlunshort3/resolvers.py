@@ -72,8 +72,11 @@ def generic_resolver(url, tricks, timeout=None):
     elif r.status_code in request_error:
         logging.info('URL "{}" returned an unhandled response'.format(url))
         return None
+    elif r.status_code in redirect_codes:
+        return r.headers["Location"]
     else:
-        return r.headers["Location"]  # None by default
+        logging.error('{} returned a {} response'.format(url, r.status_code))
+        return None
 
 
     return None
