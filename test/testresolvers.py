@@ -4,15 +4,13 @@ from urlunshort3 import UrlUnshortener
 
 # all of these should resolve to https://github.com/remotephone/urlunshort3
 
-logging.basicConfig(level=logging.INFO, format='%(relativeCreated)6d %(threadName)s %(message)s')
-
 class TestResolve(unittest.TestCase):
     shortener = UrlUnshortener()
 
     def test_generic(self):
         logging.info("Testing generic url resolution")
         shortener = UrlUnshortener(tricks=True)
-        urls = ["https://bit.ly/2nBRa1c", "https://tinyurl.com/yyucc4ph", "http://tiny.cc/d0efez", "https://is.gd/gPqAfb", "https://soo.gd/rX3L", "https://t.co/202LlppKBL"]
+        urls = ["https://bit.ly/2nBRa1c", "https://tinyurl.com/yyucc4ph", "https://is.gd/gPqAfb", "https://t.co/202LlppKBL", "https://tiny.cc/d0efez"]
         for url in urls:
             dst = shortener.resolve_short(url)
             self.assertEqual(dst, "https://github.com/remotephone/urlunshort3")
