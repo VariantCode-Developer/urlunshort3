@@ -14,7 +14,7 @@ setup(
     install_requires=["requests>=2.22.0"],  # I get to this in a second
     classifiers=[
         "Development Status :: 3 - Alpha",  # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
-        "Intended Audience :: Security Analysts",  # Define that your audience are developers
+        "Intended Audience :: Information Technology",  # Define that your audience are developers
         "Topic :: Internet :: WWW/HTTP",
         "License :: OSI Approved :: BSD License",  # Again, pick a license
         "Programming Language :: Python :: 3.6",
