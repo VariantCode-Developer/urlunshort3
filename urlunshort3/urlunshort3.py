@@ -1,12 +1,7 @@
 import logging
+import requests
 from urllib.parse import urlparse, urlsplit
 from .resolvers import generic_resolver
-
-"""
-.. attribute:: services
-
-List of domains of known URL shortening services.
-"""
 
 
 class UrlUnshortener:
@@ -53,6 +48,16 @@ class UrlUnshortener:
         :returns: true or false
         """
         parts = urlsplit(url)
-        if not parts.scheme and not parts.hostname:
-            parts = urlsplit("http://" + url)
-        return bool(parts.hostname in self.services and parts.path)
+        if parts.hostname in self.services:
+            if not parts.scheme and not parts.hostname:
+                parts = urlsplit("http://" + url)
+            return bool(parts.hostname in self.services and parts.path)
+        else:
+            logging.debug('[-] Service at {} is not supported by this function, but may resolve'.format(url))
+            try:
+                r = requests.head(url)
+                if r.headers['Location'] != url:
+                    return True
+            except:
+                return False
+
